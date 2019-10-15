@@ -1,0 +1,6 @@
+# Compiled python modules
+*.pyc
+
+# Ignore Credentials
+credentials.json
+token.pickle
