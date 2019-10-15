@@ -11,23 +11,33 @@ SCOPES = ['https://www.googleapis.com/auth/drive']
 
 
 
-def createDir(path):
+def createDir(name, parents):
+    '''
+        Create new directory.
+        args ->
+            name
+            parentFolder
+    '''
     file_metadata = {
     'mimeType': 'application/vnd.google-apps.folder',
-    'name' : 'sa',
-    'parents':["1AwOY8g6WyM2MVOyurIyb_cnOJfewvrDF"]
+    'name' : name,
+    'parents':[parents]
     }
-    
-    
     file = service.files().create(body=file_metadata,
                                         fields='id').execute()
-    print('Folder ID: %s' % file.get('id'))
+    return file.get('id')
 
 
-def uploadFile2(service):
+def uploadFile2(fileName, parent):
+    '''
+        Upload a file to folder.
+        args ->
+            fileName
+            parents
+    '''
     file_name = "test"
     print("Uploading file " + file_name + "...")
-    p = [{"id": "1AwOY8g6WyM2MVOyurIyb_cnOJfewvrDF", "kind": "drive#childList"}]
+    p = [{"id": parent, "kind": "drive#childList"}]
     #We have to make a request hash to tell the google API what we're giving it
     body = {'name': file_name, "parents" : p, 'mimeType': 'application/vnd.google-apps.document'}
 
@@ -36,8 +46,9 @@ def uploadFile2(service):
     media = MediaFileUpload('test.html', mimetype = 'text/html')
 
     #Now we're doing the actual post, creating a new file of the uploaded type
-    fiahl = service.files().create(body=body, media_body=media).execute()
-
+    fiahl = service.files().create(body=body, media_body=media, fields='id').execute()
+    return fiahl.get('id')
+    
 def main():
     """Shows basic usage of the Drive v3 API.
     Prints the names and ids of the first 10 files the user has access to.
